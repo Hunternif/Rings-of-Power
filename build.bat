@@ -26,10 +26,10 @@ xcopy "%MOD_SRC_DIR%\src\assets" /s /y "%FORGE_HOME%\mcp\reobf\minecraft\assets\
 xcopy "%MOD_SRC_DIR%\src\mcmod.info" /y "%FORGE_HOME%\mcp\reobf\minecraft\"
 xcopy "%MOD_SRC_DIR%\src\*.png" /y "%FORGE_HOME%\mcp\reobf\minecraft\"
 echo ^> Creating archive
-rem TODO retreive the mod name and version
+rem TODO retrieve the mod name and version
 "%WINRAR%" a -afzip -r mod.zip ./*
 echo ^> Done
-move mod.zip %MOD_SRC_DIR%
+move mod.zip "%MOD_SRC_DIR%"
 goto end
 
 :noWinRAR

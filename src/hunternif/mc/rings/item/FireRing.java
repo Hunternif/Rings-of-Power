@@ -6,18 +6,25 @@ import hunternif.mc.rings.util.BlockUtil;
 import java.util.logging.Level;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 public class FireRing extends PoweredRing {
+	private static final String[] immuneToFireObfNames = {"field_70178_ae", "isImmuneToFire"};
 	private static final int deltaYdown = 3;
 	private static final int deltaYup = 4;
 	
 	public FireRing(int id) {
 		super(id);
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
 	@Override
@@ -65,5 +72,24 @@ public class FireRing extends PoweredRing {
 			}
 		}
 		return itemStack;
+	}
+	
+	private boolean hadThisItemLastTime = false;
+	@ForgeSubscribe
+	public void onPlayerUpdate(LivingUpdateEvent event) {
+		if (event.entityLiving instanceof EntityPlayer && !event.entity.worldObj.isRemote) {
+			EntityPlayer player = (EntityPlayer) event.entityLiving;
+			if (player.inventory.hasItem(this.itemID)) {
+				if (!hadThisItemLastTime) {
+					ObfuscationReflectionHelper.setPrivateValue(Entity.class, player, true, immuneToFireObfNames);
+					hadThisItemLastTime = true;
+				}
+			} else {
+				if (hadThisItemLastTime) {
+					ObfuscationReflectionHelper.setPrivateValue(Entity.class, player, false, immuneToFireObfNames);
+					hadThisItemLastTime = false;
+				}
+			}
+		}
 	}
 }
