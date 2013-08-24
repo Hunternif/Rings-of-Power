@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -64,7 +65,13 @@ public class ConfigLoader {
 						RingsOfPower.itemList.add((Item)info.instance);
 						
 					}
-					FMLLog.log(RingsOfPower.ID, Level.FINE, "Registered item " + info.name);
+					FMLLog.log(RingsOfPower.ID, Level.INFO, "Registered item " + info.name);
+					// Add recipe for rings of power
+					if (info.coreItem != null) {
+						GameRegistry.addRecipe(new ItemStack((Item)info.instance), "CDC", "DRD", "CDC",
+								'C', info.coreItem, 'D', Block.blockDiamond, 'R', Config.commonRing.instance);
+						FMLLog.log(RingsOfPower.ID, Level.FINE, "Added recipe for item " + info.name);
+					}
 				}
 			}
 		} catch(Exception e) {
