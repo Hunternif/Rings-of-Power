@@ -73,4 +73,8 @@ public final class BlockUtil {
 		int z = MathHelper.floor_double(vec.zCoord);
 		return world.getBlockMaterial(x, y, z).isSolid();
 	}
+	
+	public static boolean isSurfaceAt(World world, int x, int y, int z) {
+		return world.isAirBlock(x, y, z) && world.getBlockMaterial(x, y-1, z).isSolid();
+	}
 }

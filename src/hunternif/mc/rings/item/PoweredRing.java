@@ -93,6 +93,7 @@ public abstract class PoweredRing extends ModItem {
 		fuel = findBlockFuelID(player);
 		if (fuel != null) {
 			player.inventory.consumeInventoryItem(fuel.itemID);
+			// Blocks provide 9 times the fuel equivalent of items:
 			tag.setInteger(TAG_STORED_FUEL, 8);
 			return;
 		}
