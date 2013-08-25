@@ -32,7 +32,7 @@ public class TeleportRing extends PoweredRing {
 		int destZ;
 		double maxDistance = (double)(256 >> Minecraft.getMinecraft().gameSettings.renderDistance);
 		boolean tpComplete = false;
-		while (!tpComplete) {
+		while (!tpComplete && maxDistance > 1) {
 			// Allow landing on all solid and liquid blocks, but the latter only if the player is not in water
 			Vec3 position = world.getWorldVec3Pool().getVecFromPool(player.posX, player.posY, player.posZ);
 			if (!world.isRemote) {

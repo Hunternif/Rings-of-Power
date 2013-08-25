@@ -29,11 +29,11 @@ public class FireRing extends PoweredRing {
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
+		if (!player.capabilities.isCreativeMode && !hasFuel(itemStack, player)) {
+			FMLLog.log(RingsOfPower.ID, Level.INFO, "No fuel in inventory!");
+			return itemStack;
+		}
 		if (!world.isRemote) {
-			if (!player.capabilities.isCreativeMode && !hasFuel(itemStack, player)) {
-				FMLLog.log(RingsOfPower.ID, Level.INFO, "No fuel in inventory!");
-				return itemStack;
-			}
 			int playerX = MathHelper.floor_double(player.posX);
 			int playerY = MathHelper.floor_double(player.posY);
 			int playerZ = MathHelper.floor_double(player.posZ);
@@ -70,8 +70,8 @@ public class FireRing extends PoweredRing {
 					}
 				}
 			}
-			consumeFuel(itemStack, player);
 		}
+		consumeFuel(itemStack, player);
 		return itemStack;
 	}
 	

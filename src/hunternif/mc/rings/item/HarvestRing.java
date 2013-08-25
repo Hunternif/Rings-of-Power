@@ -26,11 +26,11 @@ public class HarvestRing extends PoweredRing {
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
+		if (!player.capabilities.isCreativeMode && !hasFuel(itemStack, player)) {
+			FMLLog.log(RingsOfPower.ID, Level.INFO, "No fuel in inventory!");
+			return itemStack;
+		}
 		if (!world.isRemote) {
-			if (!player.capabilities.isCreativeMode && !hasFuel(itemStack, player)) {
-				FMLLog.log(RingsOfPower.ID, Level.INFO, "No fuel in inventory!");
-				return itemStack;
-			}
 			int playerX = MathHelper.floor_double(player.posX);
 			int playerY = MathHelper.floor_double(player.posY);
 			int playerZ = MathHelper.floor_double(player.posZ);
@@ -72,8 +72,8 @@ public class HarvestRing extends PoweredRing {
 					}
 				}
 			}
-			consumeFuel(itemStack, player);
 		}
+		consumeFuel(itemStack, player);
 		return itemStack;
 	}
 	
@@ -81,6 +81,7 @@ public class HarvestRing extends PoweredRing {
 	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world,
 			int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
 		if (ItemDye.applyBonemeal(new ItemStack(this), world, x, y, z, player)) {
+			consumeFuel(itemStack, player);
 			if (!world.isRemote) {
 				world.playAuxSFX(2005, x, y, z, 0);
 			}
