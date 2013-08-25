@@ -70,6 +70,7 @@ public class FireRing extends PoweredRing {
 					}
 				}
 			}
+			consumeFuel(itemStack, player);
 		}
 		return itemStack;
 	}

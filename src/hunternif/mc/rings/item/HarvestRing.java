@@ -71,6 +71,7 @@ public class HarvestRing extends PoweredRing {
 					}
 				}
 			}
+			consumeFuel(itemStack, player);
 		}
 		return itemStack;
 	}

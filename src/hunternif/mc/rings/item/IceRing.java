@@ -65,6 +65,7 @@ public class IceRing extends PoweredRing {
 					}
 				}
 			}
+			consumeFuel(itemStack, player);
 		}
 		return itemStack;
 	}
