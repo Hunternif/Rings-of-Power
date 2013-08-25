@@ -67,10 +67,12 @@ public class ConfigLoader {
 					}
 					FMLLog.log(RingsOfPower.ID, Level.INFO, "Registered item " + info.name);
 					// Add recipe for rings of power
-					if (info.coreItem != null) {
-						GameRegistry.addRecipe(new ItemStack((Item)info.instance), "CDC", "DRD", "CDC",
-								'C', info.coreItem, 'D', Block.blockDiamond, 'R', Config.commonRing.instance);
-						FMLLog.log(RingsOfPower.ID, Level.FINE, "Added recipe for item " + info.name);
+					if (!info.coreItems.isEmpty()) {
+						for (Object coreItem : info.coreItems) {
+							GameRegistry.addRecipe(new ItemStack((Item)info.instance), "CDC", "DRD", "CDC",
+									'C', coreItem, 'D', Block.blockDiamond, 'R', Config.commonRing.instance);
+							FMLLog.log(RingsOfPower.ID, Level.INFO, "Added recipe for item " + info.name);
+						}
 					}
 				}
 			}
