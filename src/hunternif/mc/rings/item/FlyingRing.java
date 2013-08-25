@@ -28,22 +28,25 @@ public class FlyingRing extends PoweredRing {
 						player.sendPlayerAbilities();
 					}
 				}
+				// All fuel consumed
 				if (!hasFuel(stack, player) && !player.capabilities.isCreativeMode) {
 					player.capabilities.allowFlying = false;
 					player.capabilities.isFlying = false;
 					player.sendPlayerAbilities();
+					ticksFlying = 0;
 				} else if (!player.capabilities.allowFlying) {
 					player.capabilities.allowFlying = true;
 					player.sendPlayerAbilities();
 				}
 				if (player.capabilities.isFlying && !player.capabilities.isCreativeMode) {
-					ticksFlying++;
 					if (ticksFlying % 100 == 0) { // 20 ticks * 5 seconds
 						consumeFuel(stack, player);
 					}
+					ticksFlying++;
 				}
 			} else {
 				if (hadThisItemLastTime) {
+					ticksFlying = 0;
 					if (!player.capabilities.isCreativeMode) {
 						player.capabilities.allowFlying = false;
 						player.capabilities.isFlying = false;
@@ -53,6 +56,11 @@ public class FlyingRing extends PoweredRing {
 				}
 			}
 		}
+	}
+	
+	@Override
+	public boolean hasFuel(ItemStack stack, EntityPlayer player) {
+		return super.hasFuel(stack, player) || ticksFlying % 100 != 0;
 	}
 	
 	protected ItemStack findThisItem(IInventory inventory) {
