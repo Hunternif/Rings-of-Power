@@ -13,7 +13,7 @@ public class FlyingRing extends PoweredRing {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
-	private int ticksFlying = 0;
+	private long ticksFlying = 0;
 	private boolean hadThisItemLastTime = false;
 	@ForgeSubscribe
 	public void onPlayerUpdate(LivingUpdateEvent event) {
@@ -36,13 +36,11 @@ public class FlyingRing extends PoweredRing {
 					player.capabilities.allowFlying = true;
 					player.sendPlayerAbilities();
 				}
-				if (player.capabilities.isFlying) {
+				if (player.capabilities.isFlying && !player.capabilities.isCreativeMode) {
 					ticksFlying++;
-					if (ticksFlying % 100 == 0 && !player.capabilities.isCreativeMode) { // 20 ticks * 5 seconds
+					if (ticksFlying % 100 == 0) { // 20 ticks * 5 seconds
 						consumeFuel(stack, player);
 					}
-				} else {
-					ticksFlying = 0;
 				}
 			} else {
 				if (hadThisItemLastTime) {
