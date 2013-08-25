@@ -10,7 +10,7 @@ public class CfgInfo<T> {
 	public T instance;
 	protected int id;
 	public String name;
-	public Item coreItem;
+	public Object coreItem;
 	
 	protected Class type;
 	
@@ -29,7 +29,7 @@ public class CfgInfo<T> {
 	public boolean isBlock() {
 		return Block.class.isAssignableFrom(type);
 	}
-	public CfgInfo<T> setCoreItem(Item item) {
+	public CfgInfo<T> setCoreItem(Object item) {
 		this.coreItem = item;
 		return this;
 	}

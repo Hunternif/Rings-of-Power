@@ -30,6 +30,7 @@ public abstract class PoweredRing extends ModItem {
 	
 	public PoweredRing(int id) {
 		super(id);
+		setMaxStackSize(1);
 	}
 	
 	public boolean hasFuel(ItemStack stack, EntityPlayer player) {

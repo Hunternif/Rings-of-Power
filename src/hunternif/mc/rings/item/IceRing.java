@@ -6,27 +6,20 @@ import hunternif.mc.rings.util.BlockUtil;
 import java.util.logging.Level;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
-public class FireRing extends PoweredRing {
-	private static final String[] immuneToFireObfNames = {"field_70178_ae", "isImmuneToFire"};
+public class IceRing extends PoweredRing {
 	private static final int deltaYdown = 3;
 	private static final int deltaYup = 4;
-	
-	public FireRing(int id) {
+
+	public IceRing(int id) {
 		super(id);
-		MinecraftForge.EVENT_BUS.register(this);
 	}
-	
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
 		if (!world.isRemote) {
@@ -43,7 +36,7 @@ public class FireRing extends PoweredRing {
 					int y = playerY;
 					// Look down:
 					while (Math.abs(playerY-y) <= deltaYdown) {
-						if (BlockUtil.isSurfaceAt(world, x, y, z, false)) {
+						if (BlockUtil.isSurfaceAt(world, x, y, z, true)) {
 							foundSurface = true;
 							break;
 						} else {
@@ -54,7 +47,7 @@ public class FireRing extends PoweredRing {
 						y = playerY + 1;
 						// Look up:
 						while (Math.abs(playerY-y) <= deltaYup) {
-							if (BlockUtil.isSurfaceAt(world, x, y, z, false)) {
+							if (BlockUtil.isSurfaceAt(world, x, y, z, true)) {
 								foundSurface = true;
 								break;
 							} else {
@@ -63,33 +56,16 @@ public class FireRing extends PoweredRing {
 						}
 					}
 					if (foundSurface) {
-						world.setBlock(x, y, z, Block.fire.blockID);
-						if (world.getBlockId(x, y-1, z) == Block.obsidian.blockID) {
-							world.setBlock(x, y-1, z, Block.lavaStill.blockID);
+						int blockIdBelow = world.getBlockId(x, y-1, z);
+						if (blockIdBelow == Block.waterMoving.blockID || blockIdBelow == Block.waterStill.blockID) {
+							world.setBlock(x, y-1, z, Block.ice.blockID);
+						} else {
+							world.setBlock(x, y, z, Block.snow.blockID);
 						}
 					}
 				}
 			}
 		}
 		return itemStack;
-	}
-	
-	private boolean hadThisItemLastTime = false;
-	@ForgeSubscribe
-	public void onPlayerUpdate(LivingUpdateEvent event) {
-		if (event.entityLiving instanceof EntityPlayer && !event.entity.worldObj.isRemote) {
-			EntityPlayer player = (EntityPlayer) event.entityLiving;
-			if (player.inventory.hasItem(this.itemID)) {
-				if (!hadThisItemLastTime) {
-					ObfuscationReflectionHelper.setPrivateValue(Entity.class, player, true, immuneToFireObfNames);
-					hadThisItemLastTime = true;
-				}
-			} else {
-				if (hadThisItemLastTime) {
-					ObfuscationReflectionHelper.setPrivateValue(Entity.class, player, false, immuneToFireObfNames);
-					hadThisItemLastTime = false;
-				}
-			}
-		}
 	}
 }
