@@ -28,7 +28,7 @@ public class FlyingRing extends PoweredRing {
 						player.sendPlayerAbilities();
 					}
 				}
-				if (!hasFuel(stack, player)) {
+				if (!hasFuel(stack, player) && !player.capabilities.isCreativeMode) {
 					player.capabilities.allowFlying = false;
 					player.capabilities.isFlying = false;
 					player.sendPlayerAbilities();
@@ -38,7 +38,7 @@ public class FlyingRing extends PoweredRing {
 				}
 				if (player.capabilities.isFlying) {
 					ticksFlying++;
-					if (ticksFlying % 10 == 0 && !player.capabilities.isCreativeMode) { // 20 ticks * 5 seconds
+					if (ticksFlying % 100 == 0 && !player.capabilities.isCreativeMode) { // 20 ticks * 5 seconds
 						consumeFuel(stack, player);
 					}
 				} else {
@@ -46,9 +46,11 @@ public class FlyingRing extends PoweredRing {
 				}
 			} else {
 				if (hadThisItemLastTime) {
-					player.capabilities.allowFlying = false;
-					player.capabilities.isFlying = false;
-					player.sendPlayerAbilities();
+					if (!player.capabilities.isCreativeMode) {
+						player.capabilities.allowFlying = false;
+						player.capabilities.isFlying = false;
+						player.sendPlayerAbilities();
+					}
 					hadThisItemLastTime = false;
 				}
 			}
