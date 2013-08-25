@@ -29,6 +29,7 @@ public class CfgInfo<T> {
 	public boolean isBlock() {
 		return Block.class.isAssignableFrom(type);
 	}
+	/** Block, Item or ItemStack. */
 	public CfgInfo<T> setCoreItem(Object item) {
 		this.coreItem = item;
 		return this;

@@ -1,5 +1,6 @@
 package hunternif.mc.rings.util;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
@@ -78,5 +79,10 @@ public final class BlockUtil {
 	public static boolean isSurfaceAt(World world, int x, int y, int z, boolean countLiquidsSolid) {
 		Material materialBelow = world.getBlockMaterial(x, y-1, z);
 		return world.isAirBlock(x, y, z) && (materialBelow.isSolid() || (materialBelow.isLiquid() && countLiquidsSolid));
+	}
+	
+	public static boolean isCrop(World world, int x, int y, int z) {
+		int blockID = world.getBlockId(x, y, z);
+		return blockID == Block.crops.blockID || blockID == Block.carrot.blockID || blockID == Block.potato.blockID;
 	}
 }
