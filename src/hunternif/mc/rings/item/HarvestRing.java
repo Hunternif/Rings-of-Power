@@ -10,6 +10,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -74,6 +75,19 @@ public class HarvestRing extends PoweredRing {
 			consumeFuel(itemStack, player);
 		}
 		return itemStack;
+	}
+	
+	@Override
+	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world,
+			int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+		if (ItemDye.applyBonemeal(new ItemStack(this), world, x, y, z, player)) {
+			if (!world.isRemote) {
+				world.playAuxSFX(2005, x, y, z, 0);
+			}
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	@Override
