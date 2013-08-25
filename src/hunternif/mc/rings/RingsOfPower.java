@@ -24,7 +24,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class RingsOfPower {
 	public static final String ID = "RingsOfPower";
 	public static final String NAME = "Rings of Power";
-	public static final String VERSION = "0";
+	public static final String VERSION = "1.0";
 	public static final String CHANNEL = ID;
 	
 	@Instance(ID)
