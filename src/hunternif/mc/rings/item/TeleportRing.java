@@ -41,7 +41,8 @@ public class TeleportRing extends PoweredRing {
 			}
 			Vec3 look = player.getLook(1.0F);
 			Vec3 lookFar = position.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
-			MovingObjectPosition hit = world.clip(position, lookFar, !player.isInWater()); // raytrace
+			boolean isUnderWater = player.isInsideOfMaterial(Material.water);
+			MovingObjectPosition hit = world.clip(position, lookFar, !isUnderWater); // raytrace
 			
 			if (hit != null) {
 				destX = hit.blockX;
@@ -124,7 +125,8 @@ public class TeleportRing extends PoweredRing {
 	private boolean teleport(ItemStack itemStack, World world, EntityPlayer player, int x, int y, int z) {
 		// First of all, check if we are hanging in the air; if so, land.
 		Material material = world.getBlockMaterial(x, y-1, z);
-		while (!(material.isSolid() || (!player.isInWater() && material.isLiquid()))) {
+		boolean isUnderWater = player.isInsideOfMaterial(Material.water);
+		while (!(material.isSolid() || (!isUnderWater && material.isLiquid()))) {
 			y--;
 			material = world.getBlockMaterial(x, y-1, z);
 			if (y <= 0) {
