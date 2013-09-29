@@ -23,7 +23,7 @@ public abstract class PoweredRing extends ModItem {
 		fuelItems.add(Item.coal);
 		fuelItems.add(Item.glowstone);
 		fuelItems.add(Item.redstone);
-		fuelBlocks.add(Block.field_111034_cE); // Coal block
+		fuelBlocks.add(Block.coalBlock);
 		fuelBlocks.add(Block.glowStone);
 		fuelBlocks.add(Block.blockRedstone);
 	}
@@ -72,6 +72,9 @@ public abstract class PoweredRing extends ModItem {
 	}
 	
 	public void consumeFuel(ItemStack stack, EntityPlayer player) {
+		if (player.capabilities.isCreativeMode) {
+			return;
+		}
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag == null) {
 			tag = new NBTTagCompound();
