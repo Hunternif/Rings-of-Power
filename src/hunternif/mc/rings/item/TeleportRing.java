@@ -8,7 +8,6 @@ import java.util.logging.Level;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
@@ -17,6 +16,8 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.FMLLog;
 
 public class TeleportRing extends PoweredRing {
+	public static final int MAX_DISTANCE = 256;
+	
 	public TeleportRing(int id) {
 		super(id);
 	}
@@ -30,7 +31,7 @@ public class TeleportRing extends PoweredRing {
 		int destX;
 		int destY;
 		int destZ;
-		double maxDistance = (double)(256 >> Minecraft.getMinecraft().gameSettings.renderDistance);
+		double maxDistance = MAX_DISTANCE;
 		boolean tpComplete = false;
 		while (!tpComplete && maxDistance > 1) {
 			// Allow landing on all solid and liquid blocks, but the latter only if the player is not in water
