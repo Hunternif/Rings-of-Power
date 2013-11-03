@@ -18,6 +18,8 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid=RingsOfPower.ID, name=RingsOfPower.NAME, version=RingsOfPower.VERSION)
 @NetworkMod(clientSideRequired=true, serverSideRequired=true)
@@ -48,6 +50,8 @@ public class RingsOfPower {
 		
 		GameRegistry.addShapedRecipe(new ItemStack(Config.commonRing.instance),
 				"iii", "iXi", "iii", 'i', Item.ingotIron, 'X', Item.bucketLava);
+		
+		TickRegistry.registerTickHandler(Config.flyRing.instance, Side.SERVER);
 	}
 	
 	@EventHandler

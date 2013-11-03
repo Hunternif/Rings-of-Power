@@ -1,8 +1,6 @@
 package hunternif.mc.rings.item;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.EnumSet;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,21 +8,21 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import cpw.mods.fml.common.ITickHandler;
+import cpw.mods.fml.common.TickType;
 
-public class FlyingRing extends PoweredRing {
+public class FlyingRing extends PoweredRing implements ITickHandler {
+	private static final String TAG_FLYING_RING_SLOT = "RoPFlyingRingSlot";
 	private static final String TAG_FUEL_UNIT_CONSUMPTION = "RoPFuelUnitCons";
 	
 	public FlyingRing(int id) {
 		super(id);
-		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isEquipped) {
 		if (entity instanceof EntityPlayer && !entity.worldObj.isRemote) {
+			entity.getEntityData().setInteger(TAG_FLYING_RING_SLOT, slot);
 			EntityPlayer player = (EntityPlayer) entity;
 			if (player.capabilities.isCreativeMode) {
 				return;
@@ -40,32 +38,6 @@ public class FlyingRing extends PoweredRing {
 					consumeFuel(stack, player);
 				}
 				incrementFuelUnitTicks(stack);
-			}
-		}
-	}
-	
-	private Set<EntityPlayer> playersWithThisItem = Collections.synchronizedSet(new HashSet<EntityPlayer>());
-	
-	@ForgeSubscribe
-	public void onPlayerUpdate(LivingUpdateEvent event) {
-		if (event.entityLiving instanceof EntityPlayer && !event.entity.worldObj.isRemote) {
-			EntityPlayer player = (EntityPlayer) event.entityLiving;
-			if (player.capabilities.isCreativeMode) {
-				return;
-			}
-			ItemStack stack = findThisItem(player.inventory);
-			if (stack != null) {
-				if (!playersWithThisItem.contains(player)) {
-					playersWithThisItem.add(player);
-					if (hasFuel(stack, player)) {
-						allowFlying(player);
-					}
-				}
-			} else {
-				if (playersWithThisItem.contains(player)) {
-					forbidFlying(player);
-					playersWithThisItem.remove(player);
-				}
 			}
 		}
 	}
@@ -123,5 +95,34 @@ public class FlyingRing extends PoweredRing {
 		super.consumeFuel(stack, player);
 		NBTTagCompound tag = stack.getTagCompound();
 		tag.setInteger(TAG_FUEL_UNIT_CONSUMPTION, 0);
+	}
+
+	@Override
+	public void tickStart(EnumSet<TickType> type, Object... tickData) {
+		EntityPlayer player = (EntityPlayer) tickData[0];
+		NBTTagCompound tag = player.getEntityData();
+		if (tag.hasKey(TAG_FLYING_RING_SLOT)) {
+			// Verify that the ring is in its designated slot:
+			int slot = player.getEntityData().getInteger(TAG_FLYING_RING_SLOT);
+			if (slot < 0 || slot >= 36 ||
+					player.inventory.mainInventory[slot] == null ||
+					player.inventory.mainInventory[slot].itemID != this.itemID) {
+				tag.removeTag(TAG_FLYING_RING_SLOT);
+				forbidFlying(player);
+			}
+		}
+	}
+
+	@Override
+	public void tickEnd(EnumSet<TickType> type, Object... tickData) {}
+
+	@Override
+	public EnumSet<TickType> ticks() {
+		return EnumSet.of(TickType.PLAYER);
+	}
+
+	@Override
+	public String getLabel() {
+		return this.getUnlocalizedName();
 	}
 }
