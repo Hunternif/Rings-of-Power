@@ -3,7 +3,7 @@
   "modid": "RingsOfPower",
   "name": "Rings of Power",
   "description": "This mod introduces 5 rings with magic powers, much like in EE2.",
-  "version": "1.3.1",
+  "version": "@@MOD_VERSION@@",
   "mcversion": "1.6.2",
   "logoFile": "",
   "url": "http://www.planetminecraft.com/mod/162-rings-of-power-v12/",

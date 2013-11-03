@@ -1,1 +1,1 @@
-Rings of Power==============This Minecraft Forge mod introduces sevaral rings with magic powers, much like in EE2.
+Rings of Power==============This Minecraft Forge mod introduces several rings with magic powers, much like in EE2.
