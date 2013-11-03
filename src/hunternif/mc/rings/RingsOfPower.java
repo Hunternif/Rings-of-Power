@@ -12,7 +12,6 @@ import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -32,14 +31,10 @@ public class RingsOfPower {
 	@Instance(ID)
 	public static RingsOfPower instance;
 	
-	@SidedProxy(clientSide="hunternif.mc.rings.ClientProxy", serverSide="hunternif.mc.rings.CommonProxy")
-	public static CommonProxy proxy;
-	
 	public static final List<Item> itemList = new ArrayList<Item>();
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		proxy.registerSounds();
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		ConfigLoader.preLoad(config, Config.class);
 	}
