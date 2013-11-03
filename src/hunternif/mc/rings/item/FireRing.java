@@ -3,6 +3,9 @@ package hunternif.mc.rings.item;
 import hunternif.mc.rings.RingsOfPower;
 import hunternif.mc.rings.util.BlockUtil;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 
 import net.minecraft.block.Block;
@@ -75,20 +78,21 @@ public class FireRing extends PoweredRing {
 		return itemStack;
 	}
 	
-	private boolean hadThisItemLastTime = false;
+	private Set<EntityPlayer> playersWithThisItem = Collections.synchronizedSet(new HashSet<EntityPlayer>());
+	
 	@ForgeSubscribe
 	public void onPlayerUpdate(LivingUpdateEvent event) {
 		if (event.entityLiving instanceof EntityPlayer && !event.entity.worldObj.isRemote) {
 			EntityPlayer player = (EntityPlayer) event.entityLiving;
 			if (player.inventory.hasItem(this.itemID)) {
-				if (!hadThisItemLastTime) {
+				if (!playersWithThisItem.contains(player)) {
 					ObfuscationReflectionHelper.setPrivateValue(Entity.class, player, true, immuneToFireObfNames);
-					hadThisItemLastTime = true;
+					playersWithThisItem.add(player);
 				}
 			} else {
-				if (hadThisItemLastTime) {
+				if (playersWithThisItem.contains(player)) {
 					ObfuscationReflectionHelper.setPrivateValue(Entity.class, player, false, immuneToFireObfNames);
-					hadThisItemLastTime = false;
+					playersWithThisItem.remove(player);
 				}
 			}
 		}
