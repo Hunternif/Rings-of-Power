@@ -46,6 +46,7 @@ public class RingsOfPower {
 		GameRegistry.addShapedRecipe(new ItemStack(Config.commonRing.instance),
 				"iii", "iXi", "iii", 'i', Item.ingotIron, 'X', Item.bucketLava);
 		
+		TickRegistry.registerTickHandler(Config.fireRing.instance, Side.SERVER);
 		TickRegistry.registerTickHandler(Config.flyRing.instance, Side.SERVER);
 	}
 	

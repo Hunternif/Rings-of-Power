@@ -3,24 +3,25 @@ package hunternif.mc.rings.item;
 import hunternif.mc.rings.RingsOfPower;
 import hunternif.mc.rings.util.BlockUtil;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.EnumSet;
 import java.util.logging.Level;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import cpw.mods.fml.common.TickType;
 
-public class FireRing extends PoweredRing {
+public class FireRing extends PoweredRing implements ITickHandler {
+	private static final String TAG_FIRE_RING_SLOT = "RoPFireRingSlot";
+	
 	private static final String[] immuneToFireObfNames = {"field_70178_ae", "isImmuneToFire"};
 	private static final int deltaYdown = 3;
 	private static final int deltaYup = 4;
@@ -78,23 +79,46 @@ public class FireRing extends PoweredRing {
 		return itemStack;
 	}
 	
-	private Set<EntityPlayer> playersWithThisItem = Collections.synchronizedSet(new HashSet<EntityPlayer>());
+	private void setImmuneToFire(Entity entity, boolean value) {
+		if (entity.isImmuneToFire() != value) {
+			ObfuscationReflectionHelper.setPrivateValue(Entity.class, entity, value, immuneToFireObfNames);
+		}
+	}
 	
-	@ForgeSubscribe
-	public void onPlayerUpdate(LivingUpdateEvent event) {
-		if (event.entityLiving instanceof EntityPlayer && !event.entity.worldObj.isRemote) {
-			EntityPlayer player = (EntityPlayer) event.entityLiving;
-			if (player.inventory.hasItem(this.itemID)) {
-				if (!playersWithThisItem.contains(player)) {
-					ObfuscationReflectionHelper.setPrivateValue(Entity.class, player, true, immuneToFireObfNames);
-					playersWithThisItem.add(player);
-				}
-			} else {
-				if (playersWithThisItem.contains(player)) {
-					ObfuscationReflectionHelper.setPrivateValue(Entity.class, player, false, immuneToFireObfNames);
-					playersWithThisItem.remove(player);
-				}
+	@Override
+	public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean isEquipped) {
+		if (entity instanceof EntityPlayer && !entity.worldObj.isRemote) {
+			entity.getEntityData().setInteger(TAG_FIRE_RING_SLOT, slot);
+			setImmuneToFire(entity, true);
+		}
+	}
+	
+	@Override
+	public void tickStart(EnumSet<TickType> type, Object... tickData) {
+		EntityPlayer player = (EntityPlayer) tickData[0];
+		NBTTagCompound tag = player.getEntityData();
+		if (tag.hasKey(TAG_FIRE_RING_SLOT)) {
+			// Verify that the ring is in its designated slot:
+			int slot = player.getEntityData().getInteger(TAG_FIRE_RING_SLOT);
+			if (slot < 0 || slot >= 36 ||
+					player.inventory.mainInventory[slot] == null ||
+					player.inventory.mainInventory[slot].itemID != this.itemID) {
+				tag.removeTag(TAG_FIRE_RING_SLOT);
+				setImmuneToFire(player, false);
 			}
 		}
+	}
+
+	@Override
+	public void tickEnd(EnumSet<TickType> type, Object... tickData) {}
+
+	@Override
+	public EnumSet<TickType> ticks() {
+		return EnumSet.of(TickType.PLAYER);
+	}
+
+	@Override
+	public String getLabel() {
+		return this.getUnlocalizedName();
 	}
 }
