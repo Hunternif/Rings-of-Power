@@ -2,9 +2,11 @@ package hunternif.mc.rings;
 
 import hunternif.mc.rings.config.Config;
 import hunternif.mc.rings.config.ConfigLoader;
+import hunternif.mc.rings.network.CustomPacketHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,9 +23,9 @@ import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid=RingsOfPower.ID, name=RingsOfPower.NAME, version=RingsOfPower.VERSION)
-@NetworkMod(clientSideRequired=true, serverSideRequired=true)
+@NetworkMod(clientSideRequired=true, serverSideRequired=true, packetHandler=CustomPacketHandler.class, channels={RingsOfPower.CHANNEL})
 public class RingsOfPower {
-	public static final String ID = "RingsOfPower";
+	public static final String ID = "ringsofpower";
 	public static final String NAME = "Rings of Power";
 	public static final String VERSION = "@@MOD_VERSION@@";
 	public static final String CHANNEL = ID;
@@ -31,10 +33,13 @@ public class RingsOfPower {
 	@Instance(ID)
 	public static RingsOfPower instance;
 	
+	public static Logger logger;
+	
 	public static final List<Item> itemList = new ArrayList<Item>();
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+		logger = event.getModLog();
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		ConfigLoader.preLoad(config, Config.class);
 	}

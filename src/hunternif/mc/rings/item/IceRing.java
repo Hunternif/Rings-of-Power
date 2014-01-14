@@ -1,7 +1,11 @@
 package hunternif.mc.rings.item;
 
 import hunternif.mc.rings.RingsOfPower;
+import hunternif.mc.rings.effect.Effect;
+import hunternif.mc.rings.effect.EffectInstance;
+import hunternif.mc.rings.network.EffectPacket;
 import hunternif.mc.rings.util.BlockUtil;
+import hunternif.mc.rings.util.NetworkUtil;
 import hunternif.mc.rings.util.SideHit;
 
 import java.util.logging.Level;
@@ -31,6 +35,11 @@ public class IceRing extends PoweredRing {
 			int playerX = MathHelper.floor_double(player.posX);
 			int playerY = MathHelper.floor_double(player.posY);
 			int playerZ = MathHelper.floor_double(player.posZ);
+			
+			// Show effect
+			EffectInstance effect = new EffectInstance(Effect.snow, player);
+			NetworkUtil.sendToAllAround(new EffectPacket(effect).makePacket(), player);
+			
 			for (int x = playerX - 4; x <= playerX + 4; x++) {
 				for (int z = playerZ - 4; z <= playerZ + 4; z++) {
 					boolean foundSurface = false;
