@@ -2,6 +2,7 @@ package hunternif.mc.rings.item;
 
 import hunternif.mc.rings.RingsOfPower;
 import hunternif.mc.rings.util.BlockUtil;
+import hunternif.mc.rings.util.SideHit;
 
 import java.util.logging.Level;
 
@@ -34,33 +35,43 @@ public class IceRing extends PoweredRing {
 				for (int z = playerZ - 4; z <= playerZ + 4; z++) {
 					boolean foundSurface = false;
 					int y = playerY;
+					int surfaceY = y;
 					// Look down:
 					while (Math.abs(playerY-y) <= deltaYdown) {
-						if (BlockUtil.isSurfaceAt(world, x, y, z, true, false)) {
+						// Extinguish all fire:
+						if (world.getBlockId(x, y, z) == Block.fire.blockID) {
+							world.playAuxSFXAtEntity(player, 1004, x, y, z, 0);
+							world.setBlockToAir(x, y, z);
+						}
+						if (!foundSurface && BlockUtil.isSurfaceAt(world, x, y, z, true, false)) {
 							foundSurface = true;
-							break;
-						} else {
-							y--;
+							surfaceY = y;
+							//break; Don't break so all fire can be extinguished
 						}
+						y--;
 					}
-					if (!foundSurface) {
-						y = playerY + 1;
-						// Look up:
-						while (Math.abs(playerY-y) <= deltaYup) {
-							if (BlockUtil.isSurfaceAt(world, x, y, z, true, false)) {
-								foundSurface = true;
-								break;
-							} else {
-								y++;
-							}
+					// Look up:
+					y = playerY + 1;
+					while (Math.abs(playerY-y) <= deltaYup) {
+						// Extinguish all fire:
+						if (world.getBlockId(x, y, z) == Block.fire.blockID) {
+							world.playAuxSFXAtEntity(player, 1004, x, y, z, 0);
+							world.setBlockToAir(x, y, z);
 						}
+						if (!foundSurface && BlockUtil.isSurfaceAt(world, x, y, z, true, false)) {
+							foundSurface = true;
+							surfaceY = y;
+							//break; Don't break so all fire can be extinguished
+						}
+						y++;
 					}
 					if (foundSurface) {
-						int blockIdBelow = world.getBlockId(x, y-1, z);
+						// Set water to ice, on other blocks place a layer snow:
+						int blockIdBelow = world.getBlockId(x, surfaceY-1, z);
 						if (blockIdBelow == Block.waterMoving.blockID || blockIdBelow == Block.waterStill.blockID) {
-							world.setBlock(x, y-1, z, Block.ice.blockID);
+							world.setBlock(x, surfaceY-1, z, Block.ice.blockID);
 						} else {
-							world.setBlock(x, y, z, Block.snow.blockID);
+							world.setBlock(x, surfaceY, z, Block.snow.blockID);
 						}
 					}
 				}
