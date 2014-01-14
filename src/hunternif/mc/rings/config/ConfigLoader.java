@@ -70,9 +70,9 @@ public class ConfigLoader {
 					if (!info.coreItems.isEmpty()) {
 						for (Object coreItem : info.coreItems) {
 							GameRegistry.addRecipe(new ItemStack((Item)info.instance), "CDC", "DRD", "CDC",
-									'C', coreItem, 'D', Block.blockDiamond, 'R', Config.commonRing.instance);
+									'C', coreItem, 'D', Item.diamond, 'R', Config.commonRing.instance);
 							FMLLog.log(RingsOfPower.ID, Level.INFO, "Added recipe for item " + info.name);
-						}
+						}I
 					}
 				}
 			}
