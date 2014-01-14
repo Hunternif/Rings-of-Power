@@ -72,7 +72,7 @@ public class ConfigLoader {
 							GameRegistry.addRecipe(new ItemStack((Item)info.instance), "CDC", "DRD", "CDC",
 									'C', coreItem, 'D', Item.diamond, 'R', Config.commonRing.instance);
 							FMLLog.log(RingsOfPower.ID, Level.INFO, "Added recipe for item " + info.name);
-						}I
+						}
 					}
 				}
 			}
