@@ -6,7 +6,6 @@ import hunternif.mc.rings.effect.EffectInstance;
 import hunternif.mc.rings.network.EffectPacket;
 import hunternif.mc.rings.util.BlockUtil;
 import hunternif.mc.rings.util.NetworkUtil;
-import hunternif.mc.rings.util.SideHit;
 
 import java.util.logging.Level;
 
@@ -75,11 +74,21 @@ public class IceRing extends PoweredRing {
 						y++;
 					}
 					if (foundSurface) {
-						// Set water to ice, on other blocks place a layer snow:
+						// Set water to ice:
 						int blockIdBelow = world.getBlockId(x, surfaceY-1, z);
 						if (blockIdBelow == Block.waterMoving.blockID || blockIdBelow == Block.waterStill.blockID) {
 							world.setBlock(x, surfaceY-1, z, Block.ice.blockID);
-						} else {
+						}
+						// Turn moving lava to cobblestone: 
+						else if (blockIdBelow == Block.lavaMoving.blockID) {
+							world.setBlock(x, surfaceY-1, z, Block.cobblestone.blockID);
+						}
+						// Turn still lava to obsidian:
+						else if (blockIdBelow == Block.lavaStill.blockID) {
+							world.setBlock(x, surfaceY-1, z, Block.obsidian.blockID);
+						}
+						// on other blocks place a layer snow:
+						else {
 							world.setBlock(x, surfaceY, z, Block.snow.blockID);
 						}
 					}
