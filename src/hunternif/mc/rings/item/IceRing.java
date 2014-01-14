@@ -36,7 +36,7 @@ public class IceRing extends PoweredRing {
 					int y = playerY;
 					// Look down:
 					while (Math.abs(playerY-y) <= deltaYdown) {
-						if (BlockUtil.isSurfaceAt(world, x, y, z, true)) {
+						if (BlockUtil.isSurfaceAt(world, x, y, z, true, false)) {
 							foundSurface = true;
 							break;
 						} else {
@@ -47,7 +47,7 @@ public class IceRing extends PoweredRing {
 						y = playerY + 1;
 						// Look up:
 						while (Math.abs(playerY-y) <= deltaYup) {
-							if (BlockUtil.isSurfaceAt(world, x, y, z, true)) {
+							if (BlockUtil.isSurfaceAt(world, x, y, z, true, false)) {
 								foundSurface = true;
 								break;
 							} else {

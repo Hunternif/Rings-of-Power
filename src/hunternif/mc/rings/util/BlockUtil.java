@@ -76,9 +76,18 @@ public final class BlockUtil {
 		return world.getBlockMaterial(x, y, z).isSolid();
 	}
 	
-	public static boolean isSurfaceAt(World world, int x, int y, int z, boolean countLiquidsSolid) {
+	/** Returns true if the block at (x, y, z) is solid and directly above it is
+	 * effectively empty (i.e. air or a plant or a vine or snow or fire).
+	 * @param liquidAsSurface if true, will count liquid blocks as surface.
+	 * @param plantAsEmpty if true, will count plants as empty blocks.
+	 */
+	public static boolean isSurfaceAt(World world, int x, int y, int z,
+			boolean liquidAsSurface, boolean plantAsEmpty) {
+		Material material = world.getBlockMaterial(x, y, z);
 		Material materialBelow = world.getBlockMaterial(x, y-1, z);
-		return world.isAirBlock(x, y, z) && (materialBelow.isSolid() || (materialBelow.isLiquid() && countLiquidsSolid));
+		return (world.isAirBlock(x, y, z) || material == Material.snow || material == Material.fire ||
+				(plantAsEmpty && (material == Material.plants || material == Material.vine))) &&
+				(materialBelow.isSolid() || (materialBelow.isLiquid() && liquidAsSurface));
 	}
 	
 	public static boolean isCrop(World world, int x, int y, int z) {
