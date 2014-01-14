@@ -1,7 +1,11 @@
 package hunternif.mc.rings.item;
 
 import hunternif.mc.rings.RingsOfPower;
+import hunternif.mc.rings.effect.Effect;
+import hunternif.mc.rings.effect.EffectInstance;
+import hunternif.mc.rings.network.EffectPacket;
 import hunternif.mc.rings.util.BlockUtil;
+import hunternif.mc.rings.util.NetworkUtil;
 
 import java.util.EnumSet;
 import java.util.logging.Level;
@@ -38,6 +42,10 @@ public class FireRing extends PoweredRing implements ITickHandler {
 			return itemStack;
 		}
 		if (!world.isRemote) {
+			// Show effect
+			EffectInstance effect = new EffectInstance(Effect.fire, player);
+			NetworkUtil.sendToAllAround(new EffectPacket(effect).makePacket(), player);
+			
 			int playerX = MathHelper.floor_double(player.posX);
 			int playerY = MathHelper.floor_double(player.posY);
 			int playerZ = MathHelper.floor_double(player.posZ);

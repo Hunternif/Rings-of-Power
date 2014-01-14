@@ -9,6 +9,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class Effect {
 	public static final Effect[] effectList = new Effect[128];
 	public static final Effect snow = new EffectSnow(0);
+	public static final Effect fire = new EffectFire(1);
 	
 	public final int id;
 	
