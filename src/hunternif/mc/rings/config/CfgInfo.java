@@ -3,6 +3,7 @@ package hunternif.mc.rings.config;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -31,9 +32,14 @@ public class CfgInfo<T> {
 	public boolean isBlock() {
 		return Block.class.isAssignableFrom(type);
 	}
-	/** Block, Item or ItemStack. */
-	public CfgInfo<T> setCoreItem(Object item) {
+	/** Adds a core item. Block, Item or ItemStack. */
+	public CfgInfo<T> addCoreItem(Object item) {
 		coreItems.add(item);
+		return this;
+	}
+	/** Replaces the core items with the given list. Block, Item or ItemStack. */
+	public CfgInfo<T> setCoreItem(Object ... itemVariants) {
+		coreItems = Arrays.asList(itemVariants);
 		return this;
 	}
 }
