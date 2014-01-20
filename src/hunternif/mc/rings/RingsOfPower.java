@@ -14,6 +14,7 @@ import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -33,11 +34,12 @@ public class RingsOfPower {
 	@Instance(ID)
 	public static RingsOfPower instance;
 	
+	@SidedProxy(clientSide="hunternif.mc.rings.ClientProxy", serverSide="hunternif.mc.rings.ServerProxy")
+	public static CommonProxy proxy;
+	
 	public static Logger logger;
 	
 	public static final List<Item> itemList = new ArrayList<Item>();
-	
-	private PlayerTracker playerTracker;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -56,8 +58,7 @@ public class RingsOfPower {
 		TickRegistry.registerTickHandler(Config.fireRing.getInstance(), Side.SERVER);
 		TickRegistry.registerTickHandler(Config.flyRing.getInstance(), Side.SERVER);
 		
-		playerTracker = new PlayerTracker();
-		GameRegistry.registerPlayerTracker(playerTracker);
+		proxy.init();
 	}
 	
 	@EventHandler

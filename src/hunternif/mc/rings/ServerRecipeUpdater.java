@@ -11,7 +11,7 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
 /** Used to synchronize Rings of Power recipes on clients. */
-public class PlayerTracker implements IPlayerTracker {
+public class ServerRecipeUpdater implements IPlayerTracker {
 
 	@Override
 	public void onPlayerLogin(EntityPlayer player) {
