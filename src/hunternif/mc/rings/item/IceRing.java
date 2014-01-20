@@ -1,20 +1,15 @@
 package hunternif.mc.rings.item;
 
-import hunternif.mc.rings.RingsOfPower;
 import hunternif.mc.rings.effect.Effect;
 import hunternif.mc.rings.effect.EffectInstance;
 import hunternif.mc.rings.network.EffectPacket;
 import hunternif.mc.rings.util.BlockUtil;
 import hunternif.mc.rings.util.NetworkUtil;
-
-import java.util.logging.Level;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLLog;
 
 public class IceRing extends PoweredRing {
 	private static final int deltaYdown = 3;
@@ -27,7 +22,7 @@ public class IceRing extends PoweredRing {
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
 		if (!player.capabilities.isCreativeMode && !hasFuel(itemStack, player)) {
-			FMLLog.log(RingsOfPower.ID, Level.INFO, "No fuel in inventory!");
+			//RingsOfPower.logger.info("No fuel in inventory!");
 			return itemStack;
 		}
 		if (!world.isRemote) {

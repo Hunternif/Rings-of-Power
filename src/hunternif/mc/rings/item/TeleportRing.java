@@ -1,11 +1,7 @@
 package hunternif.mc.rings.item;
 
-import hunternif.mc.rings.RingsOfPower;
 import hunternif.mc.rings.util.BlockUtil;
 import hunternif.mc.rings.util.SideHit;
-
-import java.util.logging.Level;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLLog;
 
 public class TeleportRing extends PoweredRing {
 	public static final int MAX_DISTANCE = 256;
@@ -25,7 +20,7 @@ public class TeleportRing extends PoweredRing {
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
 		if (!player.capabilities.isCreativeMode && !hasFuel(itemStack, player)) {
-			FMLLog.log(RingsOfPower.ID, Level.INFO, "No fuel in inventory!");
+			//RingsOfPower.logger.info("No fuel in inventory!");
 			return itemStack;
 		}
 		int destX;

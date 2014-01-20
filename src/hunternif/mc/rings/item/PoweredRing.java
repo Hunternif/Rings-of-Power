@@ -4,7 +4,6 @@ import hunternif.mc.rings.RingsOfPower;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,7 +11,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import cpw.mods.fml.common.FMLLog;
 
 public abstract class PoweredRing extends ModItem {
 	private static final String TAG_STORED_FUEL = "RoFStoredFuel";
@@ -101,6 +99,6 @@ public abstract class PoweredRing extends ModItem {
 			tag.setInteger(TAG_STORED_FUEL, 8);
 			return;
 		}
-		FMLLog.log(RingsOfPower.ID, Level.WARNING, "Tried to consume fuel, but none was found!");
+		RingsOfPower.logger.warning("Tried to consume fuel, but none was found!");
 	}
 }

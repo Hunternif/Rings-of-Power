@@ -1,6 +1,5 @@
 package hunternif.mc.rings.item;
 
-import hunternif.mc.rings.RingsOfPower;
 import hunternif.mc.rings.effect.Effect;
 import hunternif.mc.rings.effect.EffectInstance;
 import hunternif.mc.rings.network.EffectPacket;
@@ -8,7 +7,6 @@ import hunternif.mc.rings.util.BlockUtil;
 import hunternif.mc.rings.util.NetworkUtil;
 
 import java.util.EnumSet;
-import java.util.logging.Level;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -18,11 +16,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.TickType;
 
+/**
+ * Implements tick handler to check if the player has Fire Ring in the inventory
+ * and then make him immune to fire.
+ */
 public class FireRing extends PoweredRing implements ITickHandler {
 	private static final String TAG_FIRE_RING_SLOT = "RoPFireRingSlot";
 	
@@ -38,7 +39,7 @@ public class FireRing extends PoweredRing implements ITickHandler {
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
 		if (!player.capabilities.isCreativeMode && !hasFuel(itemStack, player)) {
-			FMLLog.log(RingsOfPower.ID, Level.INFO, "No fuel in inventory!");
+			//RingsOfPower.logger.info("No fuel in inventory!");
 			return itemStack;
 		}
 		if (!world.isRemote) {

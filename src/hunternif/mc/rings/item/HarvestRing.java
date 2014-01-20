@@ -1,10 +1,6 @@
 package hunternif.mc.rings.item;
 
-import hunternif.mc.rings.RingsOfPower;
 import hunternif.mc.rings.util.BlockUtil;
-
-import java.util.logging.Level;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -14,7 +10,6 @@ import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLLog;
 
 public class HarvestRing extends PoweredRing {
 	private static final int deltaYdown = 3;
@@ -27,7 +22,7 @@ public class HarvestRing extends PoweredRing {
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
 		if (!player.capabilities.isCreativeMode && !hasFuel(itemStack, player)) {
-			FMLLog.log(RingsOfPower.ID, Level.INFO, "No fuel in inventory!");
+			//RingsOfPower.logger.info("No fuel in inventory!");
 			return itemStack;
 		}
 		if (!world.isRemote) {
@@ -69,17 +64,21 @@ public class HarvestRing extends PoweredRing {
 							Block.potato.harvestBlock(world, player, x, y, z, world.getBlockMetadata(x, y, z));
 						}
 						world.setBlockToAir(x, y, z);
+						consumeFuel(itemStack, player);
 					}
 				}
 			}
 		}
-		consumeFuel(itemStack, player);
 		return itemStack;
 	}
 	
 	@Override
 	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world,
 			int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+		if (!player.capabilities.isCreativeMode && !hasFuel(itemStack, player)) {
+			//RingsOfPower.logger.info("No fuel in inventory!");
+			return false;
+		}
 		if (ItemDye.applyBonemeal(new ItemStack(this), world, x, y, z, player)) {
 			consumeFuel(itemStack, player);
 			if (!world.isRemote) {
