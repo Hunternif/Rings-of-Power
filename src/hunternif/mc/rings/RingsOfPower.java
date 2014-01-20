@@ -3,6 +3,7 @@ package hunternif.mc.rings;
 import hunternif.mc.rings.config.Config;
 import hunternif.mc.rings.config.ConfigLoader;
 import hunternif.mc.rings.network.CustomPacketHandler;
+import hunternif.mc.rings.network.RecipeUpdaterConnectionHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -39,12 +41,14 @@ public class RingsOfPower {
 	
 	public static Logger logger;
 	
+	public static Configuration config;
+	
 	public static final List<Item> itemList = new ArrayList<Item>();
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
-		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+		config = new Configuration(event.getSuggestedConfigurationFile());
 		ConfigLoader.preLoad(config, Config.class);
 	}
 	
@@ -57,6 +61,8 @@ public class RingsOfPower {
 		
 		TickRegistry.registerTickHandler(Config.fireRing.getInstance(), Side.SERVER);
 		TickRegistry.registerTickHandler(Config.flyRing.getInstance(), Side.SERVER);
+		
+		NetworkRegistry.instance().registerConnectionHandler(new RecipeUpdaterConnectionHandler());
 		
 		proxy.init();
 	}

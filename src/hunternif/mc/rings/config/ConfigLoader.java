@@ -16,6 +16,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -26,7 +28,7 @@ public class ConfigLoader {
 	/** Block or Item that is used as common ingredient for all Rings of Power,
 	 * besides the Common Ring and the core ingredients for specific ring.
 	 * Default is item diamond. */
-	public static Object ringOfPowerCommonIngredient = Item.diamond;
+	public static Object ringOfPowerCommonIngredient;
 	
 	private static final Map<Integer, CfgInfo> loadedInfoMap = new HashMap<Integer, CfgInfo>();
 	
@@ -43,7 +45,7 @@ public class ConfigLoader {
 					"where 123 and 234 is Block or Item ID respectively.");
 			
 			String commonIngredientProp = configFile.get(CATEGORY_RECIPE,
-					"commonIngredient","item"+Item.diamond.itemID,
+					"commonIngredient", "item"+Item.diamond.itemID,
 					"Block or Item that is used as common ingredient for all Rings of Power, " +
 					"besides the Common Ring and the core ingredients for specific ring. " +
 					"Default is item diamond.").getString();
@@ -153,6 +155,29 @@ public class ConfigLoader {
 			}
 		} catch(Exception e) {
 			RingsOfPower.logger.log(Level.SEVERE, "Failed to instantiate items", e);
+		}
+	}
+	
+	/** Reset recipes for Rings of Power from the configuration file. The
+	 * configuration is assumed to have been loaded. */
+	public static void resetRecipes(Configuration configFile) {
+		String commonIngredientProp = configFile.get(CATEGORY_RECIPE,
+				"commonIngredient", "item"+Item.diamond.itemID).getString();
+		ringOfPowerCommonIngredient = parseRecipeIngredients(commonIngredientProp)[0];
+		for (CfgInfo info : loadedInfoMap.values()) {
+			if (!info.equals(Config.commonRing)) {
+				// Reload ingredients:
+				String[] coreItemVariants = configFile.get(CATEGORY_RECIPE, info.name,
+						writeIngredients(info.getCoreIngredient().toArray())).getStringList();
+				info.setCoreIngredients(parseRecipeIngredients(coreItemVariants));
+				
+				// Delete old recipes:
+				List<IRecipe> recipes = RecipeUtil.findAllCraftingRecipes(info.instance);
+				CraftingManager.getInstance().getRecipeList().removeAll(recipes);
+				
+				// Register new recipes:
+				RecipeUtil.registerRingRecipe(info, ringOfPowerCommonIngredient);
+			}
 		}
 	}
 
