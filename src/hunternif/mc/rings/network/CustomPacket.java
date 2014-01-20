@@ -30,6 +30,7 @@ public abstract class CustomPacket {
 		ImmutableBiMap.Builder<Integer, Class<? extends CustomPacket>> builder = ImmutableBiMap.builder();
 		
 		builder.put(Integer.valueOf(0), EffectPacket.class);
+		builder.put(Integer.valueOf(1), SyncRecipePacket.class);
 		
 		idMap = builder.build();
 	}
@@ -91,6 +92,18 @@ public abstract class CustomPacket {
 	
 	public abstract void process(ByteArrayDataInput in, EntityPlayer player, Side side)
 			throws IOException, ProtocolException;
+	
+	protected enum PacketDirection {
+		CLIENT_TO_SERVER(false, true), SERVER_TO_CLIENT(true, false), BOTH(true, true);
+		public final boolean toClient;
+		public final boolean toServer;
+		private PacketDirection(boolean toClient, boolean toServer) {
+			this.toClient = toClient;
+			this.toServer = toServer;
+		}
+	}
+	
+	public abstract PacketDirection getPacketDirection();
 	
 	protected void writeCompressedNBT(NBTTagCompound tag, ByteArrayDataOutput out) {
 		try {

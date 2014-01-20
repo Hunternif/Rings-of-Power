@@ -10,10 +10,13 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
 public class CfgInfo<T> {
-	public T instance;
+	protected T instance;
+	/** At first this is default ID, then it is set by Configuration. */
 	protected int id;
-	public String name;
-	public List coreItems = new ArrayList();
+	protected final String name;
+	/** List of variants of core ingredient for the recipe (the one that's in the
+	 * corners of the crafting grid). */
+	private List coreIngredient = new ArrayList();
 	
 	protected Class type;
 	
@@ -27,19 +30,36 @@ public class CfgInfo<T> {
 	}
 	
 	public int getID() {
+		if (instance == null) return id;
 		return isBlock() ? ((Block)instance).blockID : ((Item)instance).itemID;
 	}
 	public boolean isBlock() {
 		return Block.class.isAssignableFrom(type);
 	}
-	/** Adds a core item. Block, Item or ItemStack. */
-	public CfgInfo<T> addCoreItem(Object item) {
-		coreItems.add(item);
+	public Class getType() {
+		return type;
+	}
+	/** Adds a core ingredient variant. Block, Item or ItemStack. */
+	public CfgInfo<T> addCoreIngredient(Object item) {
+		coreIngredient.add(item);
 		return this;
 	}
-	/** Replaces the core items with the given list. Block, Item or ItemStack. */
-	public CfgInfo<T> setCoreItem(Object ... itemVariants) {
-		coreItems = Arrays.asList(itemVariants);
+	/** Replaces core ingredients with the given list. Block, Item or ItemStack. */
+	public CfgInfo<T> setCoreIngredients(Object ... ingredientVariants) {
+		coreIngredient = Arrays.asList(ingredientVariants);
 		return this;
 	}
+
+	public T getInstance() {
+		return instance;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public List getCoreIngredient() {
+		return coreIngredient;
+	}
+
 }

@@ -37,6 +37,8 @@ public class RingsOfPower {
 	
 	public static final List<Item> itemList = new ArrayList<Item>();
 	
+	private PlayerTracker playerTracker;
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
@@ -48,11 +50,14 @@ public class RingsOfPower {
 	public void load(FMLInitializationEvent event) {
 		ConfigLoader.load(Config.class);
 		
-		GameRegistry.addShapedRecipe(new ItemStack(Config.commonRing.instance),
+		GameRegistry.addShapedRecipe(new ItemStack(Config.commonRing.getInstance()),
 				"iii", "iXi", "iii", 'i', Item.ingotIron, 'X', Item.bucketLava);
 		
-		TickRegistry.registerTickHandler(Config.fireRing.instance, Side.SERVER);
-		TickRegistry.registerTickHandler(Config.flyRing.instance, Side.SERVER);
+		TickRegistry.registerTickHandler(Config.fireRing.getInstance(), Side.SERVER);
+		TickRegistry.registerTickHandler(Config.flyRing.getInstance(), Side.SERVER);
+		
+		playerTracker = new PlayerTracker();
+		GameRegistry.registerPlayerTracker(playerTracker);
 	}
 	
 	@EventHandler

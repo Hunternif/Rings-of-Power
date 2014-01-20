@@ -33,8 +33,14 @@ public class CustomPacketHandler implements IPacketHandler {
 				byte[] unzipped = ZipUtil.decompressByteArray(packet.data, 1);
 				in = ByteStreams.newDataInput(unzipped);
 			}
+			Side side = entityPlayer.worldObj.isRemote ? Side.CLIENT : Side.SERVER;
+			if (side.isClient() && !customPacket.getPacketDirection().toClient) {
+				throw new ProtocolException("Can't send " + getClass().getSimpleName() + " to client");
+			} else if (!side.isClient() && !customPacket.getPacketDirection().toServer) {
+				throw new ProtocolException("Can't send " + getClass().getSimpleName() + " to server");
+			}
 			try {
-				customPacket.process(in, entityPlayer, entityPlayer.worldObj.isRemote ? Side.CLIENT : Side.SERVER);
+				customPacket.process(in, entityPlayer, side);
 			} catch (IOException e) {
 				throw new ProtocolException(e);
 			}
